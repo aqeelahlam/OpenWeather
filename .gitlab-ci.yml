@@ -2,7 +2,7 @@ image: python:3.5
 test:
         script:
             - pip install coverage
-            - coverage run --branch /project/WeatherForecast.py
+            - coverage run --branch WeatherForecast.py
             - coverage report -m
             
 test2:
