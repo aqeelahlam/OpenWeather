@@ -1,0 +1,10 @@
+image: python:3.5
+test:
+        script:
+            - pip install coverage
+            -pip coverage run --branch PriorityQeue.py
+            -coverage report -m
+            
+test2:
+        script:
+                -python3 test.py
