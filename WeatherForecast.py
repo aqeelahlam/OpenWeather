@@ -3,7 +3,7 @@ import argparse
 from optparse import OptionParser
 from datetime import datetime
 
-##For action:
+# For action:
 """
 The action has two different options, store and store_true
 
@@ -12,12 +12,10 @@ store_true: This doesnt require an argument
  
 """
 
-##For dest:
+# For destination:
 """
 This is the name of the token
 """
-
-
 
 parser = OptionParser()
 parser.add_option('--api', action='store', dest='api_key',
@@ -28,7 +26,7 @@ parser.add_option('--city', action='store', dest='city_name',
 
 parser.add_option('--cid', action='store', dest='city_id',
                   help='Perform query based on the name of the City ID')
-#
+
 parser.add_option('--gc', action='store', dest='geographic_coordinates',
                   help='Perform query based on the geographic coordinates given in latitude,longitude')
 
@@ -58,15 +56,11 @@ parser.add_option('--sunrise', action='store_true', dest='sunrise',
 
 (options, args) = parser.parse_args()
 
-
-##START HEREEEEEEEEEE###
-
-
-temperatureParser = argparse.ArgumentParser()
-
-temperatureParser.add_argument('--temp', '-t', nargs='?', type=str, const='celcius')
-
-c = temperatureParser.parse_args()
+# temperatureParser = argparse.ArgumentParser()
+#
+# temperatureParser.add_argument('--temp', '-t', nargs='?', type=str, const='celcius')
+#
+# c = temperatureParser.parse_args()
 
 
 def print_information(response):
@@ -78,10 +72,14 @@ def print_information(response):
     # This variable holds all the information in JSON format thats
     api_data = response.json()
 
+    # if c:
+    #     temperature = int(api_data['main']['temp'])
+    #     print(" Temperature = ", temperature)
+
     if options.time:
-        timeVariable = int(api_data['dt'])
-        currentTime = datetime.utcfromtimestamp(timeVariable).strftime('%Y-%m-%d %H:%M:%S')
-        print("The Current time is: ", currentTime)
+        time_variable = int(api_data['dt'])
+        current_time = datetime.utcfromtimestamp(time_variable).strftime('%Y-%m-%d %H:%M:%S')
+        print("The Current time is: ", current_time)
 
     if options.pressure:
         print("Pressure:", api_data['main']['pressure'])
@@ -97,55 +95,66 @@ def print_information(response):
         print("Wind degrees:", api_data['wind']['deg'])
 
     if options.sunset:
-        sunsetVariable = int(api_data['sys']['sunset'])
-        sunset_time = datetime.utcfromtimestamp(sunsetVariable).strftime('%Y-%m-%d %H:%M:%S')
+        sunset_variable = int(api_data['sys']['sunset'])
+        sunset_time = datetime.utcfromtimestamp(sunset_variable).strftime('%Y-%m-%d %H:%M:%S')
         print("Sunset time:", sunset_time)
 
     if options.sunrise:
-        sunriseVariable = int(api_data['sys']['sunrise'])
-        time_sunrise = datetime.utcfromtimestamp(sunriseVariable).strftime('%Y-%m-%d %H:%M:%S')
+        sunrise_variable = int(api_data['sys']['sunrise'])
+        time_sunrise = datetime.utcfromtimestamp(sunrise_variable).strftime('%Y-%m-%d %H:%M:%S')
         print("Sunrise time:", time_sunrise)
 
 
-if options.city_name and options.city_id or options.geographic_coordinates or options.zip_code:
-    print("Multiple Locations")
-elif options.geographic_coordinates and options.city_name or options.city_id or options.zip_code:
-    print("Multiple Locations")
-elif options.city_id and options.city_name or options.geographic_coordinates or options.zip_code:
-    print("Multiple Locations")
-elif options.zip_code and options.city_name or options.geographic_coordinates or options.city_id:
-    print("Multiple Locations")
+def multiple_locations():
+    """
+
+    :return:
+    """
+
+    if options.city_name and (options.city_id or options.geographic_coordinates or options.zip_code):
+        return "Multiple Locations"
+    elif options.geographic_coordinates and (options.city_name or options.city_id or options.zip_code):
+        return "Multiple Locations"
+    elif options.city_id and (options.city_name or options.geographic_coordinates or options.zip_code):
+        return "Multiple Locations"
+    elif options.zip_code and (options.city_name or options.geographic_coordinates or options.city_id):
+        return "Multiple Locations"
 
 
-elif options.city_name and options.api_key and options.time or options.pressure or options.cloud or options.humidity or options.wind or options.sunset or options.sunrise:
-    url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}"
-    response = requests.get(url.format(options.city_name, options.api_key))
-    print_information(response)
+def other():
+
+    blah = options.time or options.pressure or options.cloud or \
+           options.humidity or options.wind or \
+           options.sunset or options.sunrise
+
+    if options.api_key and options.city_name and blah:
+        url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}"
+        response = requests.get(url.format(options.city_name, options.api_key))
+        print_information(response)
+
+    elif options.api_key and options.city_id and blah:
+        url = "https://api.openweathermap.org/data/2.5/weather?id={}&appid={}"
+        response = requests.get(url.format(options.city_id, options.api_key))
+        print_information(response)
+
+    elif options.api_key and options.geographic_coordinates and blah:
+        lat_lon = options.geographic_coordinates.split(",")
+        latitude = lat_lon[0]
+        longitude = lat_lon[1]
+        url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}"
+        response = requests.get(url.format(latitude, longitude, options.api_key))
+        print_information(response)
+
+    elif options.api_key and options.zip_code and blah:
+        url = "https://api.openweathermap.org/data/2.5/weather?zip={}&appid={}"
+        response = requests.get(url.format(options.zip_code, options.api_key))
+        print_information(response)
+
+    elif not blah:
+        print("Nothing chosen")
 
 
-elif options.city_id and options.api_key and options.time or options.pressure or options.cloud or options.humidity or options.wind or options.sunset or options.sunrise:
-    url = "https://api.openweathermap.org/data/2.5/weather?id={}&appid={}"
-    response = requests.get(url.format(options.city_id, options.api_key))
-    print_information(response)
-
-
-elif options.geographic_coordinates and options.api_key and options.time or options.pressure or options.cloud or options.humidity or options.wind or options.sunset or options.sunrise:
-    lat_lon = options.geographic_coordinates.split(",")
-    lat = lat_lon[0]
-    lon = lat_lon[1]
-    url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}"
-    response = requests.get(url.format(lat, lon, options.api_key))
-    print_information(response)
-
-elif options.zip_code and options.api_key and options.time or options.pressure or options.cloud or options.humidity or options.wind or options.sunset or options.sunrise:
-    url = "https://api.openweathermap.org/data/2.5/weather?zip={}&appid={}"
-    response = requests.get(url.format(options.zip_code, options.api_key))
-    print_information(response)
-
-elif not options.time or options.pressure or options.cloud or options.humidity or options.wind or options.sunset or options.sunrise:
-    print("Nothing chosen")
-
-
-
-
+if __name__ == "__main__":
+    multiple_locations()
+    other()
 
