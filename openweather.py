@@ -2,21 +2,29 @@ import requests
 import argparse
 from datetime import datetime
 
-# For action:
+
 """
-The action has two different options, store and store_true
+For action:
+
+The action has two different options that I have used, store and store_true
 
 store: Requires an  argument to be inserted through the command lined
 store_true: This doesnt require an argument
  
 """
 
-# For destination:
+
 """
+For dest:
+
 This is the name of the token
 """
 
 def options_tokens():
+    """
+
+    :return:
+    """
 
     parser = argparse.ArgumentParser()
 
@@ -64,12 +72,13 @@ def options_tokens():
     return options
 
 
-
 def print_information(response):
     """
-    This function is used to print out the results to the console
-    :param response:
-    :return:
+    This function is used to print out the results to the console.
+    :param response: This parameter holds the response from the website in JSON format.
+    :return: Prints a message onto console based on input given in by the user.
+
+    The 'format' function was used to convert the float number to 2 significant figures.
     """
     # This variable holds all the information in JSON format that is
     apiData = response.json()
@@ -93,20 +102,20 @@ def print_information(response):
 
     if options_tokens().time:
         timeStamp = int(apiData['dt'])
-        current_time = datetime.utcfromtimestamp(timeStamp).strftime('%Y-%m-%d %H:%M:%S')
-        print("On", current_time)
+        currentTime = datetime.utcfromtimestamp(timeStamp).strftime('%Y-%m-%d %H:%M:%S')
+        print("On", currentTime)
 
     if options_tokens().pressure:
-        print("Pressure:", apiData['main']['pressure'])
+        print("The atmospheric pressure at this locality is at", str(apiData['main']['pressure'])+"Pa")
 
     if options_tokens().cloud:
-        print("Cloudiness:", apiData['clouds']['all'], "%")
+        print("Cloudiness:", str(apiData['clouds']['all']), "%")
 
     if options_tokens().humidity:
         print("It is likely Cloudy with a humidity of", str(apiData['main']['humidity'])+"%")
 
     if options_tokens().wind:
-        print("There is wind speed", apiData['wind']['speed'], "meter/sec from", apiData['wind']['deg'], "degrees")
+        print("There is wind speed", str(apiData['wind']['speed']), "meter/sec from", str(apiData['wind']['deg']), "degrees")
 
     if options_tokens().sunset:
         sunsetTimeStamp = int(apiData['sys']['sunset'])
@@ -121,8 +130,8 @@ def print_information(response):
 
 def multiple_locations():
     """
-    This function is used to return True or False based on whether or not the user chooses multiple locations
-    :return:
+    This function is used to return True or False based on whether or not the user chooses multiple locations.
+    :return: Returns True if only one of the location tokens have been used at a given time.
     True: If only one location type is chosen.
     False: If more than one type was chosen.
     """
@@ -148,6 +157,10 @@ def multiple_locations():
 
 
 def api_token_input():
+    """
+
+    :return:
+    """
 
     otherTokens = options_tokens().time or options_tokens().pressure or options_tokens().cloud\
            or options_tokens().humidity or options_tokens().wind or options_tokens().sunset\
