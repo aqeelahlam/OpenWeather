@@ -7,4 +7,7 @@ test:
             
 test2:
         script:
-                - python3 test.py
+                - python3 test_openweather.py
+                - coverage run test_openweather.py
+                - coverage report -m
+            
