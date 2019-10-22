@@ -1,4 +1,7 @@
 image: python:3.5
+before script:
+    - pip install -r requirements
+
 test:
         script:
             - pip install coverage
