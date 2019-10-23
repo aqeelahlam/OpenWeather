@@ -35,6 +35,7 @@ class Testopenweather(TestCase):
         current = openweather.options_tokens()
 
     def test_wind(self):
+        ##ask for api, city and wind, then assert wind?
         self.assertTrue(self.options_tokens().wind)
 
 
