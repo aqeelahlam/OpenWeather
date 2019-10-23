@@ -59,12 +59,38 @@ class Testopenweather(TestCase):
 
     def test_pressure(self):
 
+
     def test_location(self):
 
 
     def test_allCompatibleOptions(self):
 
+    ##location
 
+
+    def test_city(self):
+        #city_name=true , city_id=false, city_coord=false, city_zip =false ASSERTTRUE
+
+    def test_id(self):
+        # city_name=false , city_id=true, city_coord=false, city_zip =false
+
+    def test_coord(self):
+        # city_name=false , city_id=false, city_coord=true, city_zip =false
+
+    def test_zip(self):
+        #city_name=false , city_id=false, city_coord=false, city_zip =true
+
+    def test_location2(self):
+        #city_name=true , city_id=true, city_coord=false, city_zip =false // consider id ASSERT FALSE
+
+    def test_location2(self):
+        # city_name=false , city_id=false, city_coord=false, city_zip =false //consider name ASSERT FALSE
+
+    def test_location2(self):
+        #city_name=true , city_id=true, city_coord=true, city_zip =false // consider coord ASSERT FALSE
+
+    def test_location2(self):
+        #city_name=true , city_id=true, city_coord=false, city_zip =true // consider zip ASSERT FALSE
 
 
 
