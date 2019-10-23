@@ -35,6 +35,7 @@ class Testopenweather(TestCase):
         current = openweather.options_tokens()
 
     def test_wind(self):
+        self.assertTrue(self.options_tokens().wind)
 
 
     def test_humidity(self):
