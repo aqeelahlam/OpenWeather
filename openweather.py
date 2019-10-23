@@ -174,6 +174,7 @@ def api_token_input():
         if options_tokens().api_key and options_tokens().city_name and otherTokens:
             url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}"
             response = requests.get(url.format(options_tokens().city_name, options_tokens().api_key))
+            print(url.format(options_tokens().city_name, options_tokens().api_key))
             print_information(response)
 
         # This is for when the user chooses to get information using the tokens based on the City ID
@@ -205,6 +206,4 @@ def api_token_input():
 if __name__ == "__main__":
     api_token_input()
 
-
-
-
+##08fce8ac44b0fe40a029e7d1a0b987a2
