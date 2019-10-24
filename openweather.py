@@ -69,11 +69,12 @@ def options_tokens():
 
     options = parser.parse_args()
 
+    api_token_input(options)
 
     return options
 
 
-def print_information(response):
+def print_information(response, options):
     """
     This function is used to print out the results to the console.
     :param response: This parameter holds the response from the website in JSON format.
@@ -84,14 +85,14 @@ def print_information(response):
     # This variable holds all the information in JSON format that is
     apiData = response.json()
 
-    if options_tokens().temperature:
-        if str(options_tokens().temperature) == 'celsius':
+    if options.temperature:
+        if str(options.temperature) == 'celsius':
             celsiusMin = int(apiData['main']['temp_min']) - 273.15
             celsiusMax = int(apiData['main']['temp_max']) - 273.15
             print("The temperature ranges from", format(celsiusMin, '.2f'),
                   "-", format(celsiusMax, '.2f'), "celsius")
 
-        elif str(options_tokens().temperature) == 'fahrenheit':
+        elif str(options.temperature) == 'fahrenheit':
             fahrenheitMin = (int(apiData['main']['temp_min']) * 9/5) - 459.67
             fahrenheitMax = (int(apiData['main']['temp_max']) * 9/5) - 459.67
 
@@ -101,35 +102,35 @@ def print_information(response):
         else:
             print("Invalid unit type for temperature")
 
-    if options_tokens().time:
+    if options.time:
         timeStamp = int(apiData['dt'])
         currentTime = datetime.utcfromtimestamp(timeStamp).strftime('%Y-%m-%d %H:%M:%S')
         print("On", currentTime)
 
-    if options_tokens().pressure:
+    if options.pressure:
         print("The atmospheric pressure at this locality is at", str(apiData['main']['pressure'])+"Pa")
 
-    if options_tokens().cloud:
+    if options.cloud:
         print("Cloudiness:", str(apiData['clouds']['all']), "%")
 
-    if options_tokens().humidity:
+    if options.humidity:
         print("It is likely Cloudy with a humidity of", str(apiData['main']['humidity'])+"%")
 
-    if options_tokens().wind:
+    if options.wind:
         print("There is wind speed", str(apiData['wind']['speed']), "meter/sec from", str(apiData['wind']['deg']), "degrees")
 
-    if options_tokens().sunset:
+    if options.sunset:
         sunsetTimeStamp = int(apiData['sys']['sunset'])
         sunsetTime = datetime.utcfromtimestamp(sunsetTimeStamp).strftime('%Y-%m-%d %H:%M:%S')
         print("The sun will set at", sunsetTime)
 
-    if options_tokens().sunrise:
+    if options.sunrise:
         sunriseTimeStamp = int(apiData['sys']['sunrise'])
         sunriseTime = datetime.utcfromtimestamp(sunriseTimeStamp).strftime('%Y-%m-%d %H:%M:%S')
         print("The sun will rise at", sunriseTime)
 
 
-def multiple_locations():
+def multiple_locations(options):
     """
     This function is used to return True or False based on whether or not the user chooses multiple locations.
     :return: Returns True if only one of the location tokens have been used at a given time.
@@ -137,67 +138,68 @@ def multiple_locations():
     False: If more than one type was chosen.
     """
 
-    if options_tokens().city_name and (options_tokens().city_id or
-                                       options_tokens().geographic_coordinates or options_tokens().zip_code):
+    if options.city_name and (options.city_id or
+                                       options.geographic_coordinates or options.zip_code):
         return True
 
-    elif options_tokens().city_id and (options_tokens().city_name or
-                                       options_tokens().geographic_coordinates or options_tokens().zip_code):
+    elif options.city_id and (options.city_name or
+                                       options.geographic_coordinates or options.zip_code):
         return True
 
-    elif options_tokens().geographic_coordinates and (options_tokens().city_name or
-                                                      options_tokens().city_id or options_tokens().zip_code):
+    elif options.geographic_coordinates and (options.city_name or
+                                                      options.city_id or options.zip_code):
         return True
 
-    elif options_tokens().zip_code and (options_tokens().city_name or
-                                        options_tokens().city_id or options_tokens().geographic_coordinates):
+    elif options.zip_code and (options.city_name or
+                                        options.city_id or options.geographic_coordinates):
         return True
 
     else:
         return False
+#
 
 
-def api_token_input():
+
+def api_token_input(options):
     """
 
     :return:
     """
 
-    otherTokens = options_tokens().time or options_tokens().pressure or options_tokens().cloud\
-           or options_tokens().humidity or options_tokens().wind or options_tokens().sunset\
-           or options_tokens().sunrise or options_tokens().temperature
+    otherTokens = options.time or options.pressure or options.cloud\
+           or options.humidity or options.wind or options.sunset\
+           or options.sunrise or options.temperature
 
-    if multiple_locations():
+    if multiple_locations(options):
         print("Multiple chosen locations are specified")
     else:
 
         # This is for when the user chooses to get information using the tokens based on the City Name
-        if options_tokens().api_key and options_tokens().city_name and otherTokens:
+        if options.api_key and options.city_name and otherTokens:
             url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}"
-            response = requests.get(url.format(options_tokens().city_name, options_tokens().api_key))
-            print(url.format(options_tokens().city_name, options_tokens().api_key))
-            print_information(response)
+            response = requests.get(url.format(options.city_name, options.api_key))
+            print_information(response, options)
 
         # This is for when the user chooses to get information using the tokens based on the City ID
-        elif options_tokens().api_key and options_tokens().city_id and otherTokens:
+        elif options.api_key and options.city_id and otherTokens:
             url = "https://api.openweathermap.org/data/2.5/weather?id={}&appid={}"
-            response = requests.get(url.format(options_tokens().city_id, options_tokens().api_key))
-            print_information(response)
+            response = requests.get(url.format(options.city_id, options.api_key))
+            print_information(response, options)
 
         # This is for when the user chooses to get information using the tokens based on the Geographic Coordinates
-        elif options_tokens().api_key and options_tokens().geographic_coordinates and otherTokens:
-            GeoCoordinates = options_tokens().geographic_coordinates.split(",")
+        elif options.api_key and options.geographic_coordinates and otherTokens:
+            GeoCoordinates = options.geographic_coordinates.split(",")
             latitude = GeoCoordinates[0]
             longitude = GeoCoordinates[1]
             url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}"
-            response = requests.get(url.format(latitude, longitude, options_tokens().api_key))
-            print_information(response)
+            response = requests.get(url.format(latitude, longitude, options.api_key))
+            print_information(response, options)
 
         # This is for when the user chooses to get information using the tokens based on the Zip Code
-        elif options_tokens().api_key and options_tokens().zip_code and otherTokens:
+        elif options.api_key and options.zip_code and otherTokens:
             url = "https://api.openweathermap.org/data/2.5/weather?zip={}&appid={}"
-            response = requests.get(url.format(options_tokens().zip_code, options_tokens().api_key))
-            print_information(response)
+            response = requests.get(url.format(options.zip_code, options.api_key))
+            print_information(response, options)
 
         # If the user doesn't specify any tokens
         elif not otherTokens:
@@ -205,6 +207,6 @@ def api_token_input():
 
 
 if __name__ == "__main__":
-    api_token_input()
+    options_tokens()
 
 ##08fce8ac44b0fe40a029e7d1a0b987a2
