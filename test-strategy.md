@@ -10,11 +10,8 @@ on the final outcome of the boolean expression.
 
 
 By individually checking if each option works, we only cover half the possibles. This is because by enabling one option, we set everything option to false in our 
-test cases. Although this results in les path coverage, it does not effect the testing of the functional correctness because each options functionality is independent of the others.
+test cases. Although this results in less path coverage, it does not effect the testing of the functional correctness because each options functionality is independent of the others.
 
 
-MCDC is used to test the location functionality, as only one location identifier may be accepted at a time.
+MCDC is used to test the location functionality, as only one location identifier can be accepted at a time.
 
-Test Case | Test Strategy
-----------|---------------
-All compatible options | Path coverage. By taking all the options to be true, we test what the output is if all options are provided, and if any errors occur.
