@@ -1,6 +1,7 @@
 import requests
 import argparse
 from datetime import datetime
+import sys
 
 """
 For action:
@@ -27,10 +28,10 @@ def options():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-api', action='store', dest='api_key',
+    parser.add_argument('-api', action='append', dest='api_key',
                         help='An API token is required to perform the API request')
 
-    parser.add_argument('-city', action='store', dest='city_name',
+    parser.add_argument('-city', action='append', dest='city_name',
                         help='Perform query based on the name of the City')
 
     parser.add_argument('-cid', action='store', dest='city_id',
@@ -156,6 +157,72 @@ def multiple_locations(options):
         return False
 
 
+def infeasible_cases(options):
+    """
+    This function is used to return True or False based on whether or not an infeasible situation has occurred.
+    This includes no inputs, and multiple of the same input.
+    :return: Returns True if only an infeasible situation occurs.
+    True: If only one location type is chosen.
+    False: If more than one type was chosen.
+    """
+    # if no options are given
+    if len(sys.argv) == 1:
+        print("No inputs were given")
+        return "No inputs were given"
+
+    if not options.api_key:
+        print("No api token given")
+        return "No api token given"
+
+    if not(options.city_name or options.city_id or options.geographic_coordinates or options.zip_code):
+        print("No Location input given")
+        return "No location input given"
+
+    # For repeated arguments
+    for x in range(len(sys.argv)):
+        for y in range(x+1, len(sys.argv)):
+            if sys.argv[x] == sys.argv[y]:
+                print("Input Argument " + str(y+1) + " is a repeat argument")
+                return True
+
+    if len(options.api_key) != 1:
+        print(len(options.api_key))
+        print("Multiple api keys given")
+        return True
+    else:
+        options.api_key = options.api_key[0]
+
+    if options.city_name:
+        if len(options.city_name) == 1:
+            options.city_name = options.city_name[0]
+        else:
+            print("Multiple cities given")
+            return True
+
+    elif options.city_id:
+        if len(options.city_id) == 1:
+            options.city_id = options.city_id[0]
+        else:
+            print("Multiple cities given")
+            return True
+
+    elif options.zip_code:
+        if len(options.zip_code) == 1:
+            options.zip_code = options.zip_code[0]
+        else:
+            print("Multiple cities given")
+            return True
+
+    elif options.geographic_coordinates:
+        if len(options.geographic_coordinates) == 1:
+            options.geographic_coordinates = options.geographic_coordinates[0]
+        else:
+            print("Multiple cities given")
+            return True
+
+    return False
+
+
 def api_token_input(options):
     """
 
@@ -167,8 +234,11 @@ def api_token_input(options):
                   or options.sunrise or options.temperature
 
     if multiple_locations(options):
-        print("Multiple chosen locations are specified")
-        return "Multiple chosen locations are specified"
+        print("Multiple chosen location types are specified")
+        return "Multiple chosen location types are specified"
+
+    elif infeasible_cases(options):
+        return
 
     else:
         try:
