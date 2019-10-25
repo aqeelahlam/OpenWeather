@@ -34,13 +34,13 @@ def options():
     parser.add_argument('-city', action='append', dest='city_name',
                         help='Perform query based on the name of the City')
 
-    parser.add_argument('-cid', action='store', dest='city_id',
+    parser.add_argument('-cid', action='append', dest='city_id',
                         help='Perform query based on the name of the City ID')
 
-    parser.add_argument('-gc', action='store', dest='geographic_coordinates',
+    parser.add_argument('-gc', action='append', dest='geographic_coordinates',
                         help='Perform query based on the geographic coordinates given in latitude,longitude')
 
-    parser.add_argument('-z', action='store', dest='zip_code',
+    parser.add_argument('-z', action='append', dest='zip_code',
                         help='Perform query based on the zip-code, country code')
 
     parser.add_argument('-time', action='store_true', dest='time',
@@ -84,13 +84,13 @@ def print_information(response, options):
     apiData = response.json()
 
     if options.temperature:
-        if str(options.temperature) == 'celsius':
+        if str(options.temperature).lower() == 'celsius':
             celsiusMin = int(apiData['main']['temp_min']) - 273.15
             celsiusMax = int(apiData['main']['temp_max']) - 273.15
             print("The temperature ranges from", format(celsiusMin, '.2f'),
                   "-", format(celsiusMax, '.2f'), "celsius")
 
-        elif str(options.temperature) == 'fahrenheit':
+        elif str(options.temperature).lower() == 'fahrenheit':
             fahrenheitMin = (int(apiData['main']['temp_min']) * 9 / 5) - 459.67
             fahrenheitMax = (int(apiData['main']['temp_max']) * 9 / 5) - 459.67
 
@@ -182,7 +182,7 @@ def infeasible_cases(options):
     for x in range(len(sys.argv)):
         for y in range(x+1, len(sys.argv)):
             if sys.argv[x] == sys.argv[y]:
-                print("Input Argument " + str(y+1) + " is a repeat argument")
+                print("Input argument " + str(y+1) + " is a repeat argument")
                 return True
 
     if len(options.api_key) != 1:
@@ -237,8 +237,8 @@ def api_token_input(options):
         print("Multiple chosen location types are specified")
         return "Multiple chosen location types are specified"
 
-    elif infeasible_cases(options):
-        return
+    # elif infeasible_cases(options):
+    #     return
 
     else:
         try:

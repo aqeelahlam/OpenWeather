@@ -22,14 +22,14 @@ class Testopenweather(unittest.TestCase):
         testObject.api_key = "08fce8ac44b0fe40a029e7d1a0b987a2"
         testObject.city_name = "Mumbai"
         testObject.city_id = "802"
-        self.assertEqual("Multiple chosen locations are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location token")
+        self.assertEqual("Multiple chosen location types are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location token")
 
     def test_multiple_locations2(self):
         testObject = openweather.options()
         testObject.api_key = "08fce8ac44b0fe40a029e7d1a0b987a2"
         testObject.city_id = "802"
         testObject.geographic_coordinates = {"lon":145.77,"lat":-16.92}
-        self.assertEqual("Multiple chosen locations are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location")
+        self.assertEqual("Multiple chosen location types are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location")
 
     # do for geographical coordinates
     def test_multiple_locations3(self):
@@ -37,7 +37,7 @@ class Testopenweather(unittest.TestCase):
         testObject.api_key = "08fce8ac44b0fe40a029e7d1a0b987a2"
         testObject.geographic_coordinates = "Mumbai"
         testObject.zip_code = "0005"
-        self.assertEqual("Multiple chosen locations are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location")
+        self.assertEqual("Multiple chosen location types are specified",openweather.api_token_input(testObject),"Test Failed:Specify only one location")
 
     def test_no_other_tokens(self):
         testObject = openweather.options()

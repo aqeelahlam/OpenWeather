@@ -15,3 +15,5 @@ test cases. Although this results in less path coverage, it does not effect the 
 
 MCDC is used to test the location functionality, as only one location identifier can be accepted at a time.
 
+For the for loop, we use loop coverage, where we enter the loop 0 times, 1 time, and many times, to see if the behaviour changes. However, we cannot not enter the loop,
+because it causes an error to be thrown. The for loop requires the range to be greater than 1. 
